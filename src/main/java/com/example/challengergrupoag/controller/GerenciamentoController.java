@@ -52,4 +52,21 @@ public class GerenciamentoController {
     public ResponseEntity<Atividade> createAtividade(@RequestBody Atividade atividade) {
         return ResponseEntity.ok(gerenciamentoService.saveAtividade(atividade));
     }
+
+    @PostMapping("/atribuir-atividade")
+    public ResponseEntity<Atividade> atribuirAtividade(@RequestParam Long clienteId, @RequestParam Long projetoId, @RequestBody Atividade atividade) {
+        Cliente cliente = gerenciamentoService.findClienteById(clienteId);
+        Projeto projeto = gerenciamentoService.findProjetoById(projetoId);
+
+        if (cliente == null || projeto == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        atividade.setCliente(cliente);
+        atividade.setProjeto(projeto);
+
+        Atividade atividadeSalva = gerenciamentoService.saveAtividade(atividade);
+
+        return ResponseEntity.ok(atividadeSalva);
+    }
 }

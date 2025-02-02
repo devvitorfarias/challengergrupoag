@@ -12,14 +12,19 @@ public class Projeto {
 
     private String nome;
 
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Atividade> atividades;
 
     // Construtores
     public Projeto() {}
 
-    public Projeto(String nome) {
+    public Projeto(String nome, Cliente cliente) {
         this.nome = nome;
+        this.cliente = cliente;
     }
 
     // Getters e Setters
@@ -37,6 +42,14 @@ public class Projeto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public List<Atividade> getAtividades() {
