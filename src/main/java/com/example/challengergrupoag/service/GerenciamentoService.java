@@ -92,4 +92,9 @@ public class GerenciamentoService {
     public Atividade saveAtividade(Atividade atividade) {
         return atividadeRepository.save(atividade);
     }
+
+    public Optional<Atividade> findAtividadeById(Long id) {
+        return atividadeRepository.findById(id);
+    }
+
 }

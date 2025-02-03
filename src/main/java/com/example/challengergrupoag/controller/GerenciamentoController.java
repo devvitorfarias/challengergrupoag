@@ -1,5 +1,6 @@
 package com.example.challengergrupoag.controller;
 
+import com.example.challengergrupoag.dto.AtividadeRelatorioDTO;
 import com.example.challengergrupoag.model.Atividade;
 import com.example.challengergrupoag.model.Cliente;
 import com.example.challengergrupoag.model.Projeto;
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/gerenciamento")
@@ -53,20 +56,29 @@ public class GerenciamentoController {
         return ResponseEntity.ok(gerenciamentoService.saveAtividade(atividade));
     }
 
-    @PostMapping("/atribuir-atividade")
-    public ResponseEntity<Atividade> atribuirAtividade(@RequestParam Long clienteId, @RequestParam Long projetoId, @RequestBody Atividade atividade) {
-        Cliente cliente = gerenciamentoService.findClienteById(clienteId);
-        Projeto projeto = gerenciamentoService.findProjetoById(projetoId);
+    @PutMapping("/atividades/{id}")
+    public ResponseEntity<Atividade> atualizarAtividade(
+            @PathVariable Long id,
+            @RequestBody AtividadeRelatorioDTO atividadeDTO) {
 
-        if (cliente == null || projeto == null) {
+        // Verifica se a atividade existe
+        Optional<Atividade> atividadeOptional = gerenciamentoService.findAtividadeById(id);
+        if (!atividadeOptional.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        atividade.setCliente(cliente);
-        atividade.setProjeto(projeto);
+        Atividade atividade = atividadeOptional.get();
 
-        Atividade atividadeSalva = gerenciamentoService.saveAtividade(atividade);
+        // Atualiza os campos da atividade com os dados do DTO
+        atividade.setDescricao(atividadeDTO.getDescricao());
+        atividade.setStatus(atividadeDTO.getStatus());
 
-        return ResponseEntity.ok(atividadeSalva);
+        // Converte as datas de String para LocalDateTime (se necessário)
+        atividade.setDataInicio(LocalDateTime.parse(atividadeDTO.getDataInicio()));
+        atividade.setDataFim(LocalDateTime.parse(atividadeDTO.getDataFim()));
+
+        // Salva a atividade atualizada
+        Atividade atividadeAtualizada = gerenciamentoService.saveAtividade(atividade);
+        return ResponseEntity.ok(atividadeAtualizada);
     }
 }
