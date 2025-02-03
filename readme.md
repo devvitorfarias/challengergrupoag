@@ -32,3 +32,8 @@
             <li><strong>Projeto:</strong> Registra os projetos em andamento e os status associados.</li>
             <li><strong>Atividade:</strong> Cada atividade é associada a um projeto e cliente, podendo ser adicionada a qualquer momento.</li>
         </ul>
+<h2>Diagrama</h2>
+https://app.eraser.io/workspace/9JSXCl8VP71xGeLPAqA5?origin=share
+<h2>Dificuldades</h2>
+<p>O teste ficou meio confuso pra mim em relação a exibição de atividades cadastradas em cada projeto e gerenciamento de status , acredito eu que no meu Postman o problema que eu esteja sofrendo é em relação a cache . Se caso meu codigo não funcionar eu aceito feedbacks para melhorias</p>
+
