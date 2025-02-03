@@ -1,17 +1,15 @@
 package com.example.challengergrupoag.controller;
 
-import com.example.challengergrupoag.dto.AtividadeRelatorioDTO;
 import com.example.challengergrupoag.model.Atividade;
 import com.example.challengergrupoag.model.Cliente;
 import com.example.challengergrupoag.model.Projeto;
+import com.example.challengergrupoag.service.AtividadeService;
 import com.example.challengergrupoag.service.GerenciamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/gerenciamento")
@@ -19,6 +17,9 @@ public class GerenciamentoController {
 
     @Autowired
     private GerenciamentoService gerenciamentoService;
+
+    @Autowired
+    private AtividadeService atividadeService;
 
     // ------------------ CLIENTES ------------------
 
@@ -30,6 +31,16 @@ public class GerenciamentoController {
     @PostMapping("/clientes")
     public ResponseEntity<Cliente> createCliente(@RequestBody Cliente cliente) {
         return ResponseEntity.ok(gerenciamentoService.saveCliente(cliente));
+    }
+
+    // Endpoint para buscar atividades de um cliente específico:
+    @GetMapping("/clientes/{clienteId}/atividades")
+    public ResponseEntity<List<Atividade>> getAtividadesPorCliente(@PathVariable Long clienteId) {
+        List<Atividade> atividades = gerenciamentoService.findAtividadesByClienteId(clienteId);
+        if (atividades.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(atividades);
     }
 
     // ------------------ PROJETOS ------------------
@@ -53,32 +64,21 @@ public class GerenciamentoController {
 
     @PostMapping("/atividades")
     public ResponseEntity<Atividade> createAtividade(@RequestBody Atividade atividade) {
-        return ResponseEntity.ok(gerenciamentoService.saveAtividade(atividade));
+        Atividade novaAtividade = atividadeService.criarAtividade(atividade);
+        return ResponseEntity.ok(novaAtividade);
     }
 
-    @PutMapping("/atividades/{id}")
-    public ResponseEntity<Atividade> atualizarAtividade(
-            @PathVariable Long id,
-            @RequestBody AtividadeRelatorioDTO atividadeDTO) {
+    // Endpoint para adicionar uma nova atividade
+    @PostMapping("/adicionar")
+    public ResponseEntity<Atividade> adicionarAtividade(
+            @RequestParam Long clienteId,
+            @RequestParam Long projetoId,
+            @RequestParam String descricao,
+            @RequestParam String status,
+            @RequestParam String dataInicio,
+            @RequestParam String dataFim) {
 
-        // Verifica se a atividade existe
-        Optional<Atividade> atividadeOptional = gerenciamentoService.findAtividadeById(id);
-        if (!atividadeOptional.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Atividade atividade = atividadeOptional.get();
-
-        // Atualiza os campos da atividade com os dados do DTO
-        atividade.setDescricao(atividadeDTO.getDescricao());
-        atividade.setStatus(atividadeDTO.getStatus());
-
-        // Converte as datas de String para LocalDateTime (se necessário)
-        atividade.setDataInicio(LocalDateTime.parse(atividadeDTO.getDataInicio()));
-        atividade.setDataFim(LocalDateTime.parse(atividadeDTO.getDataFim()));
-
-        // Salva a atividade atualizada
-        Atividade atividadeAtualizada = gerenciamentoService.saveAtividade(atividade);
-        return ResponseEntity.ok(atividadeAtualizada);
+        Atividade novaAtividade = atividadeService.criarAtividade(clienteId, projetoId, descricao, status, dataInicio, dataFim);
+        return ResponseEntity.ok(novaAtividade);
     }
 }

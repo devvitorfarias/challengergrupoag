@@ -13,24 +13,27 @@ public class Atividade {
     private String descricao;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "projeto_id")
+    @JoinColumn(name = "projeto_id", nullable = false)
     private Projeto projeto;
 
-    private String status;  // Status da atividade (Ex: "Em andamento", "Concluída")
-    private LocalDateTime dataInicio;  // Data de início da atividade
-    private LocalDateTime dataFim;  // Data de fim da atividade
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusAtividade status;
+
+    private LocalDateTime dataInicio;
+    private LocalDateTime dataFim;
 
     // Construtor vazio (necessário para JPA)
     public Atividade() {}
 
-    public Atividade(String descricao, Projeto projeto, String status, LocalDateTime dataInicio, LocalDateTime dataFim) {
+    public Atividade(String descricao, Projeto projeto, StatusAtividade status, LocalDateTime dataInicio, LocalDateTime dataFim) {
         this.descricao = descricao;
         this.projeto = projeto;
-        this.status = status;
+        this.status = status;  // Atribuindo o status correto
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
     }
@@ -68,11 +71,11 @@ public class Atividade {
         this.projeto = projeto;
     }
 
-    public String getStatus() {
+    public StatusAtividade getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusAtividade status) {
         this.status = status;
     }
 
@@ -90,5 +93,12 @@ public class Atividade {
 
     public void setDataFim(LocalDateTime dataFim) {
         this.dataFim = dataFim;
+    }
+
+    // Enum para Status de Atividade
+    public enum StatusAtividade {
+        EM_ANDAMENTO,
+        CONCLUIDA,
+        PENDENTE
     }
 }
