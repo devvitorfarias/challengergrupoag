@@ -18,7 +18,6 @@ Este projeto é um sistema de gerenciamento de projetos, desenvolvido para integ
 - **Spring Boot**: Framework para construção da API e lógica de negócios.
 - **Hibernate**: ORM utilizado para persistência de dados.
 - **PostgreSQL**: Banco de dados relacional para armazenamento de informações.
--
 ## Estrutura de Banco de Dados
 
 O banco de dados utilizado é o **PostgreSQL**, com a persistência feita via **Hibernate**. As principais entidades do sistema são:
