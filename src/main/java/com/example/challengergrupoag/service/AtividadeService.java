@@ -3,6 +3,7 @@ package com.example.challengergrupoag.service;
 import com.example.challengergrupoag.model.Atividade;
 import com.example.challengergrupoag.model.Cliente;
 import com.example.challengergrupoag.model.Projeto;
+import com.example.challengergrupoag.repository.AtividadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,10 @@ public class AtividadeService {
     @Autowired
     private GerenciamentoService gerenciamentoService;
 
+    @Autowired
+    private AtividadeRepository atividadeRepository;  // Injeção do repositório
+
+    // Método para criar atividade a partir de IDs de cliente e projeto
     public Atividade criarAtividade(Long clienteId, Long projetoId, String descricao, String status, String dataInicio, String dataFim) {
 
         // Buscando cliente e projeto
@@ -35,10 +40,22 @@ public class AtividadeService {
         novaAtividade.setCliente(cliente);
 
         // Salvando a atividade
-        return gerenciamentoService.saveAtividade(novaAtividade);
+        return atividadeRepository.save(novaAtividade);  // Usando o save do repositório
     }
 
+    // Método para criar uma atividade diretamente a partir do objeto
     public Atividade criarAtividade(Atividade atividade) {
-        return gerenciamentoService.saveAtividade(atividade);
+        return atividadeRepository.save(atividade);  // Usando o save do repositório
+    }
+
+    // Método para buscar atividade pelo ID
+    public Atividade findById(Long atividadeId) {
+        return atividadeRepository.findById(atividadeId)
+                .orElse(null);  // Retorna null se a atividade não for encontrada
+    }
+
+    // Método para atualizar a atividade
+    public Atividade atualizarAtividade(Atividade atividade) {
+        return atividadeRepository.save(atividade);  // Atualiza ou salva a atividade no banco
     }
 }
